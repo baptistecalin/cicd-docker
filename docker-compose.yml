@@ -22,6 +22,7 @@ services:
     networks:
       gitlab-net:
         aliases:
+          - gitlab-ce
           - ${GITLAB_HOSTNAME}
 
   gitlab-runner:
