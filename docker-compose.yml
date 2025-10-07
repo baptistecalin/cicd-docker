@@ -79,6 +79,8 @@ services:
 
   snyk:
     image: snyk/snyk:latest
+    env_file:
+      - ${ENV_FILE}
     container_name: snyk-${CICD_ENV}
     restart: always
     environment:
