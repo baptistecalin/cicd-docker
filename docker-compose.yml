@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:latest
+    env_file:
+      - .env # commun
+      - ${ENV_FILE} # environnement dynamique (dev/prod)
+    container_name: gitlab-ce-${CICD_ENV}
+    restart: always
+    hostname: ${GITLAB_HOSTNAME}
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://${GITLAB_HOSTNAME}'
+        gitlab_rails['gitlab_shell_ssh_port'] = ${GITLAB_SSH_PORT}
+    ports:
+      - "${GITLAB_HTTP_PORT}:80"
+      - "${GITLAB_SSH_PORT}:22"
+    volumes:
+      - ${CICD_DIR}/${CICD_ENV}/gitlab/config:/etc/gitlab
+      - ${CICD_DIR}/${CICD_ENV}/gitlab/logs:/var/log/gitlab
+      - ${CICD_DIR}/${CICD_ENV}/gitlab/data:/var/opt/gitlab
+    networks:
+      gitlab-net:
+        aliases:
+          - ${GITLAB_HOSTNAME}
+
+  gitlab-runner:
+    image: gitlab/gitlab-runner:latest
+    env_file:
+      - .env # commun
+      - ${ENV_FILE} # environnement dynamique (dev/prod)
+    container_name: gitlab-runner-${CICD_ENV}
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${CICD_DIR}/${CICD_ENV}/gitlab-runner/config:/etc/gitlab-runner
+    networks:
+      - gitlab-net
+
+networks:
+  gitlab-net:
+    name: gitlab-net-${CICD_ENV}
+    driver: bridge
