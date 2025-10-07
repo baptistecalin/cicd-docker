@@ -46,7 +46,7 @@ start_env() {
 
 stop_env() {
   echo "-> Stopping containers..."
-  docker compose down
+  docker compose --env-file "$env_file" down
   echo "[ok] Containers stopped."
 }
 
