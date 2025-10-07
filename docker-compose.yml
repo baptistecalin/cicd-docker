@@ -36,6 +36,43 @@ services:
     networks:
       - gitlab-net
 
+  sonarqube:
+  image: sonarqube:community
+  container_name: sonarqube-ce-${CICD_ENV}
+  restart: always
+  environment:
+    - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    - SONAR_SEARCH_JAVAADDITIONALOPTS=-Xms512m -Xmx512m
+    - SONARQUBE_JDBC_USERNAME=${SONAR_DB_USER}
+    - SONARQUBE_JDBC_PASSWORD=${SONAR_DB_PASS}
+    - SONARQUBE_JDBC_URL=jdbc:postgresql://sonarqube-db:${SONAR_DB_PORT_INTERNAL}/${SONAR_DB_NAME}
+  ports:
+    - "${SONARQUBE_HTTP_PORT}:9000"
+  volumes:
+    - ${CICD_DIR}/${CICD_ENV}/sonarqube/config:/opt/sonarqube/conf
+    - ${CICD_DIR}/${CICD_ENV}/sonarqube/data:/opt/sonarqube/data
+    - ${CICD_DIR}/${CICD_ENV}/sonarqube/extensions:/opt/sonarqube/extensions
+    - ${CICD_DIR}/${CICD_ENV}/sonarqube/logs:/opt/sonarqube/logs
+  depends_on:
+    - sonarqube-db
+  networks:
+    - gitlab-net
+
+sonarqube-db:
+  image: postgres:13
+  container_name: sonarqube-db-${CICD_ENV}
+  restart: always
+  environment:
+    - POSTGRES_USER=${SONAR_DB_USER}
+    - POSTGRES_PASSWORD=${SONAR_DB_PASS}
+    - POSTGRES_DB=${SONAR_DB_NAME}
+  ports:
+    - "${SONAR_DB_PORT_EXTERNAL}:5432"
+  volumes:
+    - ${CICD_DIR}/${CICD_ENV}/sonarqube/postgres:/var/lib/postgresql/data
+  networks:
+    - gitlab-net
+
 networks:
   gitlab-net:
     name: gitlab-net-${CICD_ENV}
