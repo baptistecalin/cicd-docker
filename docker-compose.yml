@@ -78,7 +78,7 @@ services:
       - gitlab-net
 
   snyk:
-    image: snyk/snyk:latest
+    image: snyk/snyk:docker-latest
     env_file:
       - ${ENV_FILE}
     container_name: snyk-${CICD_ENV}
