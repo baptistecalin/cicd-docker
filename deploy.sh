@@ -33,21 +33,21 @@ start_env() {
   local env_file=$1
 
   if [ ! -f "$env_file" ]; then
-    echo "[x] Error: $env_file not found!"
+    echo "[!] Error: $env_file not found!"
     exit 1
   fi
 
-  echo "-> Using environment: $env_file"
+  echo "[+] Using environment: $env_file"
   export ENV_FILE="$env_file"
 
   docker compose --env-file "$env_file" up -d
-  echo "[ok] Stack started with $env_file"
+  echo "[✔] Stack started with $env_file"
 }
 
 stop_env() {
-  echo "-> Stopping containers..."
-  docker compose --env-file "$env_file" down
-  echo "[ok] Containers stopped."
+  echo "[+] Stopping containers..."
+  docker compose down
+  echo "[✔] Containers stopped."
 }
 
 show_logs() {
