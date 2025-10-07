@@ -13,7 +13,6 @@ set -e
 COMPOSE_FILE="docker-compose.yml"
 DEFAULT_ENV_DEV=".env.dev"
 DEFAULT_ENV_PROD=".env.prod"
-COMMON_ENV=".env"
 
 # --- FUNCTIONS --------------------------------------------
 

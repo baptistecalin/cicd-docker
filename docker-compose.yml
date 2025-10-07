@@ -4,7 +4,6 @@ services:
   gitlab:
     image: gitlab/gitlab-ce:latest
     env_file:
-      - .env # commun
       - ${ENV_FILE} # environnement dynamique (dev/prod)
     container_name: gitlab-ce-${CICD_ENV}
     restart: always
@@ -28,7 +27,6 @@ services:
   gitlab-runner:
     image: gitlab/gitlab-runner:latest
     env_file:
-      - .env # commun
       - ${ENV_FILE} # environnement dynamique (dev/prod)
     container_name: gitlab-runner-${CICD_ENV}
     restart: always
