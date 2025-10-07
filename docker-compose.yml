@@ -77,18 +77,18 @@ services:
     networks:
       - gitlab-net
 
-  snyk:
-    image: snyk/snyk:docker-latest
-    env_file:
-      - ${ENV_FILE}
-    container_name: snyk-${CICD_ENV}
-    restart: always
-    environment:
-      SNYK_TOKEN: ${SNYK_TOKEN}
-    ports:
-      - "${SNYK_HTTP_PORT}:8000"
-    networks:
-      - gitlab-net
+  # snyk:
+  #   image: snyk/snyk:docker-latest
+  #   env_file:
+  #     - ${ENV_FILE}
+  #   container_name: snyk-${CICD_ENV}
+  #   restart: always
+  #   environment:
+  #     SNYK_TOKEN: ${SNYK_TOKEN}
+  #   ports:
+  #     - "${SNYK_HTTP_PORT}:8000"
+  #   networks:
+  #     - gitlab-net
 
   nexus:
     image: sonatype/nexus3:latest
