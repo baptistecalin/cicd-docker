@@ -1,6 +1,23 @@
 version: "3.8"
 
 services:
+  nginx:
+    image: nginx:latest
+    env_file:
+      - ${ENV_FILE} # environnement dynamique (dev/prod)
+    container_name: nginx-proxy-${CICD_ENV}
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ${CICD_DIR}/${CICD_ENV}/nginx/conf.d:/etc/nginx/conf.d
+      - ${CICD_DIR}/${CICD_ENV}/nginx/certs:/etc/nginx/certs
+    depends_on:
+      - gitlab
+      - sonarqube
+    networks:
+      - gitlab-net
   gitlab:
     image: gitlab/gitlab-ce:latest
     env_file:
