@@ -1,23 +1,23 @@
 version: "3.8"
 
 services:
-  # nginx:
-  #   image: nginx:latest
-  #   env_file:
-  #     - ${ENV_FILE} # environnement dynamique (dev/prod)
-  #   container_name: nginx-proxy-${CICD_ENV}
-  #   restart: always
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   volumes:
-  #     - ${CICD_DIR}/${CICD_ENV}/nginx/conf.d:/etc/nginx/conf.d
-  #     - ${CICD_DIR}/${CICD_ENV}/nginx/certs:/etc/nginx/certs
-  #   depends_on:
-  #     - gitlab
-  #     - sonarqube
-  #   networks:
-  #     - gitlab-net
+  nginx:
+    image: nginx:latest
+    env_file:
+      - ${ENV_FILE} # environnement dynamique (dev/prod)
+    container_name: nginx-proxy-${CICD_ENV}
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ${CICD_DIR}/${CICD_ENV}/nginx/conf.d:/etc/nginx/conf.d
+      - ${CICD_DIR}/${CICD_ENV}/nginx/certs:/etc/nginx/certs
+    depends_on:
+      - gitlab
+      - sonarqube
+    networks:
+      - gitlab-net
   gitlab:
     image: gitlab/gitlab-ce:latest
     env_file:
@@ -27,7 +27,7 @@ services:
     hostname: ${GITLAB_HOSTNAME}
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        external_url 'http://${GITLAB_HOSTNAME}:${GITLAB_HTTP_PORT}/'
+        external_url 'http://${GITLAB_HOSTNAME}/gitlab-${CICD_ENV}/'
         gitlab_rails['gitlab_shell_ssh_port'] = ${GITLAB_SSH_PORT}
     ports:
       - "${GITLAB_HTTP_PORT}:80"
