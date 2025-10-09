@@ -14,48 +14,48 @@ services:
       - ${CICD_DIR}/${CICD_ENV}/nginx/conf.d:/etc/nginx/conf.d
       - ${CICD_DIR}/${CICD_ENV}/nginx/certs:/etc/nginx/certs
     depends_on:
-      - gitlab
+      # - gitlab
       - sonarqube
       - nexus
     networks:
       - gitlab-net
-  gitlab:
-    image: gitlab/gitlab-ce:latest
-    env_file:
-      - ${ENV_FILE} # environnement dynamique (dev/prod)
-    container_name: gitlab-ce-${CICD_ENV}
-    restart: always
-    hostname: ${GITLAB_HOSTNAME}
-    environment:
-      GITLAB_OMNIBUS_CONFIG: |
-        external_url 'http://${GITLAB_HOSTNAME}/gitlab-${CICD_ENV}/'
-        gitlab_rails['gitlab_shell_ssh_port'] = ${GITLAB_SSH_PORT}
-    ports:
-      - "${GITLAB_HTTP_PORT}:80"
-      - "${GITLAB_SSH_PORT}:22"
-    volumes:
-      - ${CICD_DIR}/${CICD_ENV}/gitlab/config:/etc/gitlab
-      - ${CICD_DIR}/${CICD_ENV}/gitlab/logs:/var/log/gitlab
-      - ${CICD_DIR}/${CICD_ENV}/gitlab/data:/var/opt/gitlab
-    networks:
-      gitlab-net:
-        aliases:
-          - gitlab-ce
-          - ${GITLAB_HOSTNAME}
+  # gitlab:
+  #   image: gitlab/gitlab-ce:latest
+  #   env_file:
+  #     - ${ENV_FILE} # environnement dynamique (dev/prod)
+  #   container_name: gitlab-ce-${CICD_ENV}
+  #   restart: always
+  #   hostname: ${GITLAB_HOSTNAME}
+  #   environment:
+  #     GITLAB_OMNIBUS_CONFIG: |
+  #       external_url 'http://${GITLAB_HOSTNAME}/gitlab-${CICD_ENV}/'
+  #       gitlab_rails['gitlab_shell_ssh_port'] = ${GITLAB_SSH_PORT}
+  #   ports:
+  #     - "${GITLAB_HTTP_PORT}:80"
+  #     - "${GITLAB_SSH_PORT}:22"
+  #   volumes:
+  #     - ${CICD_DIR}/${CICD_ENV}/gitlab/config:/etc/gitlab
+  #     - ${CICD_DIR}/${CICD_ENV}/gitlab/logs:/var/log/gitlab
+  #     - ${CICD_DIR}/${CICD_ENV}/gitlab/data:/var/opt/gitlab
+  #   networks:
+  #     gitlab-net:
+  #       aliases:
+  #         - gitlab-ce
+  #         - ${GITLAB_HOSTNAME}
 
-  gitlab-runner:
-    image: gitlab/gitlab-runner:latest
-    env_file:
-      - ${ENV_FILE} # environnement dynamique (dev/prod)
-    container_name: gitlab-runner-${CICD_ENV}
-    restart: always
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ${CICD_DIR}/${CICD_ENV}/gitlab-runner/config:/etc/gitlab-runner
-    depends_on:
-      - gitlab
-    networks:
-      - gitlab-net
+  # gitlab-runner:
+  #   image: gitlab/gitlab-runner:latest
+  #   env_file:
+  #     - ${ENV_FILE} # environnement dynamique (dev/prod)
+  #   container_name: gitlab-runner-${CICD_ENV}
+  #   restart: always
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - ${CICD_DIR}/${CICD_ENV}/gitlab-runner/config:/etc/gitlab-runner
+  #   depends_on:
+  #     - gitlab
+  #   networks:
+  #     - gitlab-net
 
   sonarqube:
     image: sonarqube:community
