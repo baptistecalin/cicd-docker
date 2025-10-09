@@ -16,6 +16,7 @@ services:
     depends_on:
       - gitlab
       - sonarqube
+      - nexus
     networks:
       - gitlab-net
   gitlab:
@@ -51,6 +52,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${CICD_DIR}/${CICD_ENV}/gitlab-runner/config:/etc/gitlab-runner
+    depends_on:
+      - gitlab
     networks:
       - gitlab-net
 
